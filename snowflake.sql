@@ -9,12 +9,8 @@ CREATE OR REPLACE TABLE raw_data.crypto_prices (
     timestamp TIMESTAMP
 );
 
-LIST @s3_stage;
 
 
-COPY INTO raw_data.crypto_prices
-FROM @s3_stage
-FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
 
 SELECT * FROM raw_data.crypto_prices
 ORDER BY timestamp DESC

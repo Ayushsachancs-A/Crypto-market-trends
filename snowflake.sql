@@ -9,10 +9,6 @@ CREATE OR REPLACE TABLE raw_data.crypto_prices (
     timestamp TIMESTAMP
 );
 
-CREATE OR REPLACE STAGE s3_stage
-URL='s3://crypto-transform-bucket/raw/'
-CREDENTIALS = (AWS_KEY_ID='key' AWS_SECRET_KEY='skey');
-
 LIST @s3_stage;
 
 

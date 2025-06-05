@@ -16,6 +16,12 @@ def fetch_prices():
     df.index.name = 'coin'
     return df.reset_index()
 
+def clean_data(df):
+    df = df.dropna()
+    df = df[df['price_usd'] > 0]
+    df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
+    return df
+
 def upload_to_s3(df, bucket, filename):
     # Convert DataFrame to CSV string
     csv_buffer = StringIO()
@@ -27,6 +33,7 @@ def upload_to_s3(df, bucket, filename):
 
 if __name__ == "__main__":
     df = fetch_prices()
-    filename = f"raw/crypto_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.csv"
+    df = clean_data(df)
+    filename = f"cleaned/crypto_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.csv"
     upload_to_s3(df, 'crypto-transform-bucket', filename)
     print("✅ Uploaded to S3:", filename)

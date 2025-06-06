@@ -3,22 +3,19 @@ import snowflake.connector
 import pandas as pd
 import plotly.express as px
 
-# -------------------------------
-# ⛓️ Connect to Snowflake
-# -------------------------------
+
+#Connect to Snowflake
 conn = snowflake.connector.connect(
-    user='AYUSHSNOWFAKE',
-    password='Ayush@snowflake7',
-    account='FOIXSMX-GL06173',
-    warehouse='COMPUTE_WH',
-    database='CRYPTO_DATALAKE',
-    schema='RAW_DATA'
+    user='YOUR_USER',
+    password='YOUR_PASSWORD',
+    account='YOUR_ACCOUNT',
+    warehouse='YOUR_WH',
+    database='YOUR_DB',
+    schema='YOUR_SCHEMA'
 )
 
-# -------------------------------
-# 📥 Query Data from Snowflake
-# -------------------------------
-# First, let's check the table structure
+
+# Query Data from Snowflake
 desc_query = "DESC TABLE CRYPTO_PRICES"
 cursor = conn.cursor()
 cursor.execute(desc_query)
@@ -35,29 +32,27 @@ print(df.head())
 
 conn.close()
 
-# -------------------------------
-# 🧼 Data Cleaning & Enrichment
-# -------------------------------
-df['TIMESTAMP'] = pd.to_datetime(df['TIMESTAMP'])  # Column names are usually uppercase in Snowflake
+
+# Data Cleaning & Enrichment
+df['TIMESTAMP'] = pd.to_datetime(df['TIMESTAMP']) 
 df = df.sort_values(by=["COIN", "TIMESTAMP"])
 
 # Calculate 24h ago price and % change
 df['price_24h_ago'] = df.groupby('COIN')['PRICE_USD'].shift(1)
 df['24h_change'] = ((df['PRICE_USD'] - df['price_24h_ago']) / df['price_24h_ago']) * 100
 
-# Moving average (6-point window)
+# Moving average
 df['moving_avg'] = df.groupby('COIN')['PRICE_USD'].rolling(window=6).mean().reset_index(level=0, drop=True)
 
-# Rename columns to match the rest of the code
+# Rename columns 
 df = df.rename(columns={
     'TIMESTAMP': 'timestamp',
     'COIN': 'coin',
     'PRICE_USD': 'price_usd'
 })
 
-# -------------------------------
-# 📊 Streamlit UI
-# -------------------------------
+
+# Streamlit UI
 st.title("📈 Crypto Market Trend Analyzer")
 
 # Show most recent prices

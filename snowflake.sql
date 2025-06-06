@@ -13,8 +13,8 @@ CREATE OR REPLACE TABLE raw_data.crypto_prices (
 -- Create external stage to point to your S3 bucket
 CREATE OR REPLACE STAGE s3_stage
 URL='s3://crypto-transform-bucket/raw/'
-STORAGE_INTEGRATION = (skip this for now)
-CREDENTIALS = (AWS_KEY_ID='<your_access_key>' AWS_SECRET_KEY='<your_secret_key>');
+STORAGE_INTEGRATION = (skip this for now);
+--access credentials here
 
 -- View files in the S3 stage
 LIST @s3_stage;
